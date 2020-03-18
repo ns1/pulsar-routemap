@@ -2,15 +2,28 @@
 Pulsar Routemaps
 ================
 
-> This project is in [active development](https://github.com/ns1/community/blob/master/project_status/ACTIVE_DEVELOPMENT.md).
+> This project is in [active development](https://github.com/ns1/community/blob/master/project_status/ACTIVE_DEVELOPMENT.md) and is currently available as **early access**.
 
-Utilities for working with Pulsar Route Maps.
+Utilities for working with Pulsar Routemaps.
+
+Routemaps are a way to express routing policy based on the network locations of real users.
+Locations are specified as IPv4 and/or IPv6 CIDR blocks (as opposed to Geo/ASN groups) 
+for ultimate precision. Routemaps scale to millions of network addresses so you are free to 
+create groupings on a very granular level.
+
+
+### Who is using this?
+
+Many of our customers!  [Dropbox wrote a blog post](https://dropbox.tech/infrastructure/intelligent-dns-based-load-balancing-at-dropbox)
+about their experience using routemaps to implement a global load balancing policy.
 
 
 Contributing
 ------------
+
 Pull Requests and issues are welcome. See the [NS1 Contribution Guidelines](https://github.com/ns1/community) 
 for more information.
+
 
 License
 -------
