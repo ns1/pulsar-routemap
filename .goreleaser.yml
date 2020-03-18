@@ -1,0 +1,39 @@
+project_name: routemap
+
+before:
+  hooks:
+    - go mod download
+
+builds:
+- main: ./cmd/routemap/main.go
+  env:
+  - CGO_ENABLED=0
+  goos:
+  - linux
+  - darwin
+  - windows
+  goarch:
+  - amd64
+
+checksum:
+  name_template: "{{ .ProjectName }}-{{ .Version }}-checksums-sha256.txt"
+
+archives:
+- name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+  replacements:
+    amd64: 64bit
+    386: 32bit
+    darwin: macOS
+  format_overrides:
+  - goos: windows
+    format: zip
+  files:
+  - README.md
+  - LICENSE
+  wrap_in_directory: false
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+changelog:
+  skip: true
