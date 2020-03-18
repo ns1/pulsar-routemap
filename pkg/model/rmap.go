@@ -74,11 +74,8 @@ func LoadRoutemapFile(source *os.File) (*RoutemapRoot, error) {
 	fileHash := sha1.New()
 	teeHash := io.TeeReader(r, fileHash)
 
+	// Save raw bytes.
 	bytesBuf := bytes.Buffer{}
-
-	// Count bytes in the stream
-	//byteCount := util.ByteCounter{}
-	//teeBuf := io.TeeReader(teeHash, &byteCount)
 	teeBuf := io.TeeReader(teeHash, &bytesBuf)
 
 	dec := json.NewDecoder(teeBuf)
