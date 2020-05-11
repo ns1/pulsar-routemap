@@ -41,7 +41,7 @@ func RunListCommand(opts *Options) error {
 func prettyPrint(body []byte) error {
 	var rmaps []api.RoutemapPayload
 	if err := json.Unmarshal(body, &rmaps); err != nil {
-		return fmt.Errorf("parsing routemap payload: %v", err)
+		return fmt.Errorf("parsing route map payload: %v", err)
 	}
 
 	tw := tabwriter.NewWriter(os.Stdout, 8, 8, 1, ' ', 0)

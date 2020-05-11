@@ -26,7 +26,7 @@ import (
 )
 
 func RunValidateCommand(opts *Options) error {
-	lg.Infof("reading routemap from '%s'", opts.InputFilename)
+	lg.Infof("reading route map from '%s'", opts.InputFilename)
 	root, summary, err := LoadAndValidate(opts.InputFilename)
 	if err != nil {
 		return PrettyPrintErrors(err)
@@ -176,7 +176,7 @@ func startValidate(root *model.RoutemapRoot, summary *model.RoutemapSummary) err
 	}
 
 	if len(root.Routemap) == 0 {
-		lg.Warnf("routemap is empty; skipping all validation")
+		lg.Warnf("route map is empty; skipping all validation")
 		summary.NumNetworks = 0
 		return nil
 	}

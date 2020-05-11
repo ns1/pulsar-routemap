@@ -74,7 +74,7 @@ func main() {
 
 	rootCmd.Use = filepath.Base(os.Args[0])
 	rootCmd.Version = fmt.Sprintf("%s from %s (%s)", version, date, commit)
-	rootCmd.Short = fmt.Sprintf("Manage Pulsar routemaps [%s]", rootCmd.Version)
+	rootCmd.Short = fmt.Sprintf("Manage Pulsar Route Maps [%s]", rootCmd.Version)
 
 	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		return multierr.Combine(
@@ -102,6 +102,7 @@ func main() {
 
 	pf.StringVar(&globals.CacheDir, "cachedir", globals.CacheDir,
 		"Where to store cached data.")
+	pf.MarkHidden("cachedir") // Not being used yet.
 
 	pf.StringVar(&globals.NS1APIBaseURL, "api-baseurl", globals.NS1APIBaseURL,
 		"Base URL for NS1 REST API. Normally the default will suffice.")
