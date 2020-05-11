@@ -53,14 +53,14 @@ Quick start
 You'll need an NS1 API key to get started. You can get or create one via NS1's
 portal here:  https://my.nsone.net/#/account/settings
 
-Armed with your API key just use it as an argument to all commands. For example,
+Use your API key as an argument to all commands. For example,
 
 ```sh
 $ routemap --api-key xxxxxxxxxxxxxxxxx list
 ```
 
 You can also add your API key as an environment variable to save providing it
-for all commands:
+on the command line:
 
 ```sh
 $ export NS1_APIKEY=xxxxxxxxxxxxxxxxx
