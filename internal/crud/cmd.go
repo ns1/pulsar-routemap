@@ -53,12 +53,12 @@ func (o *Options) validateMapID() error {
 
 func (o *Options) addFileFlag(flags *pflag.FlagSet) {
 	flags.StringVar(&o.InputFilename, "file", "",
-		"Routemap file to validate. Default is STDIN.")
+		"Route map file to validate. Default is STDIN.")
 }
 
 func (o *Options) addNoValidateFlag(flags *pflag.FlagSet) {
 	flags.BoolVar(&o.SkipValidate, "no-validate", false,
-		"Validate the routemap before uploading.")
+		"Validate the route map before uploading.")
 }
 
 func (o *Options) addMapIDFlag(flags *pflag.FlagSet, desc string) {
@@ -69,7 +69,7 @@ func addCreateCommand(parentCmd *cobra.Command, globals *config.CommandLineGloba
 	opts := &Options{Globals: globals}
 	sub := &cobra.Command{
 		Use:   "create",
-		Short: "Create a new routemap with optional validation",
+		Short: "Create a new route map with optional validation",
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			return multierr.Combine(
 				opts.Globals.RequireAPIAccess(),
@@ -97,7 +97,7 @@ func addListCommand(parentCmd *cobra.Command, globals *config.CommandLineGlobals
 	sub := &cobra.Command{
 		Use:     "list",
 		Aliases: []string{"ls"},
-		Short:   "List available routemaps",
+		Short:   "List available route maps",
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			return opts.Globals.RequireAPIAccess()
 		},
@@ -117,7 +117,7 @@ func addReplaceCommand(parentCmd *cobra.Command, globals *config.CommandLineGlob
 	opts := &Options{Globals: globals}
 	sub := &cobra.Command{
 		Use:   "replace",
-		Short: "Replace an existing routemap with optional validation",
+		Short: "Replace an existing route map with optional validation",
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			return multierr.Combine(
 				opts.Globals.RequireAPIAccess(),
@@ -142,7 +142,7 @@ func addDeleteCommand(parentCmd *cobra.Command, globals *config.CommandLineGloba
 	opts := &Options{Globals: globals}
 	sub := &cobra.Command{
 		Use:   "delete",
-		Short: "Delete a routemap by ID",
+		Short: "Delete a route map by ID",
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			return multierr.Combine(
 				opts.Globals.RequireAPIAccess(),

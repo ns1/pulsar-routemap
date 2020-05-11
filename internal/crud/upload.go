@@ -44,7 +44,7 @@ func RunCreateOrReplaceCommand(opts *Options) error {
 		lg.Infof("map is valid; ready for upload")
 	}
 
-	lg.Infof("uploading routemap: meta version = %d, sha1 = %s, size = %d",
+	lg.Infof("uploading route map: meta version = %d, sha1 = %s, size = %d",
 		root.MetaVersion(),
 		hex.EncodeToString(root.SHA1),
 		root.SizeInBytes)

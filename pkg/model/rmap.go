@@ -44,7 +44,7 @@ type RoutemapRoot struct {
 	Raw         []byte `json:"-"`
 }
 
-// LoadRoutemapFileOrStdin loads a routemap from the named file (if name is not empty)
+// LoadRoutemapFileOrStdin loads a route map from the named file (if name is not empty)
 // or falls back to STDIN.
 func LoadRoutemapFileOrStdin(optionalFilename string) (*RoutemapRoot, error) {
 	if len(optionalFilename) == 0 {
@@ -54,7 +54,7 @@ func LoadRoutemapFileOrStdin(optionalFilename string) (*RoutemapRoot, error) {
 	}
 }
 
-// LoadRoutemapFilename loads a routemap from a filename.
+// LoadRoutemapFilename loads a route map from a filename.
 func LoadRoutemapFilename(filename string) (*RoutemapRoot, error) {
 	if source, err := os.Open(filename); err == nil {
 		defer source.Close()
@@ -64,7 +64,7 @@ func LoadRoutemapFilename(filename string) (*RoutemapRoot, error) {
 	}
 }
 
-// LoadRoutemapFile loads a routemap from an already-opened file.
+// LoadRoutemapFile loads a route map from an already-opened file.
 func LoadRoutemapFile(source *os.File) (*RoutemapRoot, error) {
 	rmap := &RoutemapRoot{}
 
@@ -83,7 +83,7 @@ func LoadRoutemapFile(source *os.File) (*RoutemapRoot, error) {
 	if decErr := dec.Decode(rmap); decErr != nil {
 		switch decErr.(type) {
 		case *json.SyntaxError:
-			return nil, fmt.Errorf("parsing routemap: %s at byte offset %d", decErr, decErr.(*json.SyntaxError).Offset)
+			return nil, fmt.Errorf("parsing route map: %s at byte offset %d", decErr, decErr.(*json.SyntaxError).Offset)
 		default:
 			return nil, decErr
 		}

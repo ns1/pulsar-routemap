@@ -29,7 +29,7 @@ func AddCommands(parentCmd *cobra.Command, globals *config.CommandLineGlobals) {
 	opts := &Options{Globals: globals}
 	sub := &cobra.Command{
 		Use:   "validate",
-		Short: "Load and validate a routemap file",
+		Short: "Load and validate a route map file",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return RunValidateCommand(opts)
 		},
@@ -38,7 +38,7 @@ func AddCommands(parentCmd *cobra.Command, globals *config.CommandLineGlobals) {
 	flags := sub.Flags()
 
 	flags.StringVar(&opts.InputFilename, "file", "",
-		"Routemap file to validate. Default is STDIN.")
+		"Route map file to validate. Default is STDIN.")
 
 	parentCmd.AddCommand(sub)
 }

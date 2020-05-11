@@ -25,7 +25,7 @@ func RunDeleteCommand(opts *Options) error {
 	if err := client.DeleteRoutemap(opts.MapID); err != nil {
 		return err
 	} else {
-		lg.Printf("deleted routemap %d", opts.MapID)
+		lg.Printf("deleted route map %d", opts.MapID)
 	}
 
 	return nil
