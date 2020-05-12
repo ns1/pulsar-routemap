@@ -34,7 +34,7 @@ are not supported.
 | Field | Data type | Description |
 | ----- | --------- | ------------|
 | `meta` | Object | Metadata related to the exchange format itself. This object is always required. |
-| `[meta] version` | Integer | (Required)  Version of the exchange data format.  Determines the semantics of the remainder of the exchange. |
+| `[meta] version` | Integer | (Required)  Version of the exchange data format.  Determines the semantics of the remainder of the document. |
 | `map` | Array of Objects | Each member object declares a segment of the map as defined by the list of network addresses contained within. |
 | `[map] networks` | Array of Strings | (Required)  IPv4 and/or IPv6 Network addresses in CIDR presentation form.  Can include both v4 and v6 addresses in a single network definition. |
 | `[map] labels` | Array of Strings | (Required)  Array of labels associated with the networks. These are arbitrary ASCII-only strings used to associate DNS answers with map segments. **Note**: The order in which you list the labels is important as it determines the order in which the answers are emitted. For example, a list of `["b", "c", "a"]` means emit DNS answers for "b" first, then "c", and then "a". |
