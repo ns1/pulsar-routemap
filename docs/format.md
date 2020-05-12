@@ -40,6 +40,12 @@ are not supported.
 | `[map] labels` | Array of Strings | (Required)  Array of labels associated with the networks. These are arbitrary ASCII-only strings used to associate DNS answers with map segments. **Note**: The order in which you list the labels is important as it determines the order in which the answers are emitted. For example, a list of `["b", "c", "a"]` means emit DNS answers for "b" first, then "c", and then "a". |
 
 
+### Limits
+
+* IPv4 prefix length up to /26
+* IPv6 prefix length up to /64
+
+
 ### Simple example
 
 The following example map defines three networks. Note that the first map 
