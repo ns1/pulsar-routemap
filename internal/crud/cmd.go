@@ -58,7 +58,7 @@ func (o *Options) addFileFlag(flags *pflag.FlagSet) {
 
 func (o *Options) addNoValidateFlag(flags *pflag.FlagSet) {
 	flags.BoolVar(&o.SkipValidate, "no-validate", false,
-		"Validate the route map before uploading.")
+		"Do not validate the route map before uploading.")
 }
 
 func (o *Options) addMapIDFlag(flags *pflag.FlagSet, desc string) {
