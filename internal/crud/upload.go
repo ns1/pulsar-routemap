@@ -21,6 +21,7 @@ import (
 	"github.com/ns1/pulsar-routemap/internal/validate"
 	"github.com/ns1/pulsar-routemap/pkg/lg"
 	"github.com/ns1/pulsar-routemap/pkg/model"
+	"github.com/ns1/pulsar-routemap/pkg/validator"
 )
 
 func RunCreateOrReplaceCommand(opts *Options) error {
@@ -35,7 +36,7 @@ func RunCreateOrReplaceCommand(opts *Options) error {
 			return err
 		}
 	} else {
-		if root, _, err = validate.LoadAndValidate(opts.InputFilename); err != nil {
+		if root, _, err = validator.LoadAndValidate(opts.InputFilename); err != nil {
 			errSummary := validate.PrettyPrintErrors(err)
 			lg.Errorf("map is invalid; halting upload process")
 			return errSummary

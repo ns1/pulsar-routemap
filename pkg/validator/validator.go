@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package validate
+package validator
 
 import (
 	"fmt"
@@ -24,19 +24,6 @@ import (
 	"github.com/ns1/pulsar-routemap/pkg/model"
 	"go.uber.org/multierr"
 )
-
-func RunValidateCommand(opts *Options) error {
-	lg.Infof("reading route map from '%s'", opts.InputFilename)
-	root, summary, err := LoadAndValidate(opts.InputFilename)
-	if err != nil {
-		return PrettyPrintErrors(err)
-	} else {
-		fmt.Println("input map is valid")
-		fmt.Println("--")
-		PrettyPrintSuccess(root, summary)
-		return nil
-	}
-}
 
 func LoadAndValidate(filename string) (*model.RoutemapRoot, model.RoutemapSummary, error) {
 	var (
@@ -182,9 +169,9 @@ func startValidate(root *model.RoutemapRoot, summary *model.RoutemapSummary) err
 	}
 
 	var (
-		allErrs error
+		allErrs            error
 		lastProgressReport int
-		numSegments = len(root.Routemap)
+		numSegments        = len(root.Routemap)
 	)
 
 	for idx, m := range root.Routemap {
@@ -197,7 +184,7 @@ func startValidate(root *model.RoutemapRoot, summary *model.RoutemapSummary) err
 		multierr.AppendInto(&allErrs, validateNetworks(m.Networks, idx, summary))
 		multierr.AppendInto(&allErrs, validateLabels(m.Labels, idx, summary))
 
-		if lg.EnabledFor(lg.LevelDebug) && (summary.NumNetworks - lastProgressReport) > 500000 {
+		if lg.EnabledFor(lg.LevelDebug) && (summary.NumNetworks-lastProgressReport) > 500000 {
 			numErrs := len(multierr.Errors(allErrs))
 			lg.Debugf("validation progress: at map segment index %d/%d; networks visited = %d, errors = %d",
 				idx, numSegments, summary.NumNetworks, numErrs)
