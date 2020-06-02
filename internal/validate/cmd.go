@@ -15,7 +15,11 @@
 package validate
 
 import (
+	"fmt"
+
 	"github.com/ns1/pulsar-routemap/internal/config"
+	"github.com/ns1/pulsar-routemap/pkg/lg"
+	"github.com/ns1/pulsar-routemap/pkg/validator"
 	"github.com/spf13/cobra"
 )
 
@@ -41,4 +45,17 @@ func AddCommands(parentCmd *cobra.Command, globals *config.CommandLineGlobals) {
 		"Route map file to validate. Default is STDIN.")
 
 	parentCmd.AddCommand(sub)
+}
+
+func RunValidateCommand(opts *Options) error {
+	lg.Infof("reading route map from '%s'", opts.InputFilename)
+	root, summary, err := validator.LoadAndValidate(opts.InputFilename)
+	if err != nil {
+		return PrettyPrintErrors(err)
+	} else {
+		fmt.Println("input map is valid")
+		fmt.Println("--")
+		PrettyPrintSuccess(root, summary)
+		return nil
+	}
 }
