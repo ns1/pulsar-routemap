@@ -39,7 +39,7 @@ func Test_validateProperCIDR(t *testing.T) {
 		ip, ipnet, err := net.ParseCIDR(fx.addr)
 		assert.NoError(t, err, fx.addr)
 
-		err = validateProperCIDR(ip, ipnet)
+		err = ValidateProperCIDR(ip, ipnet)
 		if fx.valid {
 			assert.NoError(t, err, fx.addr)
 		} else {
@@ -64,7 +64,7 @@ func Test_validateNetmaskLen(t *testing.T) {
 		_, ipnet, err := net.ParseCIDR(fx.addr)
 		assert.NoError(t, err, fx.addr)
 
-		err = validateNetmaskLen(ipnet)
+		err = ValidateNetmaskLen(ipnet)
 		if fx.valid {
 			assert.NoError(t, err, fx.addr)
 		} else {
@@ -88,7 +88,7 @@ func Test_validateLabels(t *testing.T) {
 	summary := model.NewRoutemapSummary()
 
 	for _, fx := range fixtures {
-		err := validateLabels(fx.labels, 1, &summary)
+		err := ValidateLabels(fx.labels, 1, &summary)
 		if fx.valid {
 			assert.NoError(t, err, fx.labels)
 		} else {

@@ -15,6 +15,7 @@
 package validator
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"strings"
@@ -24,6 +25,8 @@ import (
 	"github.com/ns1/pulsar-routemap/pkg/model"
 	"go.uber.org/multierr"
 )
+
+var errUnparsableNetworkAddr = errors.New("unparsable network address")
 
 func LoadAndValidate(filename string) (*model.RoutemapRoot, model.RoutemapSummary, error) {
 	var (
@@ -50,7 +53,8 @@ func isAsciiOnly(s string) bool {
 	return true
 }
 
-func validateProperCIDR(ip net.IP, ipnet *net.IPNet) error {
+// ValidateProperCIDR verifies that the IP address corresponds to the network.
+func ValidateProperCIDR(ip net.IP, ipnet *net.IPNet) error {
 	if !ip.Equal(ipnet.IP) {
 		return fmt.Errorf("network address not properly masked")
 	}
@@ -58,7 +62,9 @@ func validateProperCIDR(ip net.IP, ipnet *net.IPNet) error {
 	return nil
 }
 
-func validateNetmaskLen(ipnet *net.IPNet) error {
+// ValidateNetmaskLen verifies that the mask length does not exceeds the maximum
+// allowed value.
+func ValidateNetmaskLen(ipnet *net.IPNet) error {
 	numOnes, numBits := ipnet.Mask.Size()
 	switch {
 	case numOnes == 0 && numBits == 0:
@@ -72,31 +78,48 @@ func validateNetmaskLen(ipnet *net.IPNet) error {
 	}
 }
 
+// ValidateNetwork takes an string representing a network from the JSON source
+// file and validates it.
+// Returns the parsed IP and IPNet along with a slice of possible errors. If the
+// network can not be parsed, only the error slice will contain values. The
+// correctness of the network depends on the returned error slice having zero
+// elements.
+func ValidateNetwork(network string) (net.IP, *net.IPNet, []error) {
+	var errs []error
+
+	ip, ipnet, err := net.ParseCIDR(network)
+	if err != nil {
+		return nil, nil, []error{errUnparsableNetworkAddr}
+	}
+
+	errs = append(errs, ValidateProperCIDR(ip, ipnet))
+	errs = append(errs, ValidateNetmaskLen(ipnet))
+
+	return ip, ipnet, errs
+}
+
 func validateNetworks(nets []string, mapIdx int, summary *model.RoutemapSummary) error {
-	var allErrs error
+	var (
+		allErrs error
+		errs    []error
+		ipnet   *net.IPNet
+	)
 
 	summary.NumNetworks += len(nets)
 
 	for idx, n := range nets {
 		lg.Tracef("visiting networks at index=%d, map segment index=%d...", idx, mapIdx)
 
-		ip, ipnet, err := net.ParseCIDR(n)
-		if err != nil {
-			multierr.AppendInto(&allErrs,
-				fmt.Errorf("unparsable network address (for CIDR \"%s\" at index=%d, map segment index=%d)", n, idx, mapIdx))
-			continue
+		_, ipnet, errs = ValidateNetwork(n)
+
+		// ValidateNetwork will return a nil ipnet if the string was unparsable.
+		if ipnet != nil {
+			if _, bits := ipnet.Mask.Size(); bits == 32 {
+				summary.NumIPv4 += 1
+			} else {
+				summary.NumIPv6 += 1
+			}
 		}
-
-		if _, bits := ipnet.Mask.Size(); bits == 32 {
-			summary.NumIPv4 += 1
-		} else {
-			summary.NumIPv6 += 1
-		}
-
-		var errs []error
-
-		errs = append(errs, validateProperCIDR(ip, ipnet))
-		errs = append(errs, validateNetmaskLen(ipnet))
 
 		for _, e := range errs {
 			if e != nil {
@@ -109,7 +132,8 @@ func validateNetworks(nets []string, mapIdx int, summary *model.RoutemapSummary)
 	return allErrs
 }
 
-func validateLabels(labels []string, mapIdx int, summary *model.RoutemapSummary) error {
+// ValidateLabels validates the set of labels of the route map.
+func ValidateLabels(labels []string, mapIdx int, summary *model.RoutemapSummary) error {
 	var allErrs error
 
 	if len(labels) == 0 {
@@ -182,7 +206,7 @@ func startValidate(root *model.RoutemapRoot, summary *model.RoutemapSummary) err
 		}
 
 		multierr.AppendInto(&allErrs, validateNetworks(m.Networks, idx, summary))
-		multierr.AppendInto(&allErrs, validateLabels(m.Labels, idx, summary))
+		multierr.AppendInto(&allErrs, ValidateLabels(m.Labels, idx, summary))
 
 		if lg.EnabledFor(lg.LevelDebug) && (summary.NumNetworks-lastProgressReport) > 500000 {
 			numErrs := len(multierr.Errors(allErrs))
