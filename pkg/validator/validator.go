@@ -98,7 +98,7 @@ func ValidateNetwork(network string) (net.IP, *net.IPNet, []error) {
 	return ip, ipnet, errs
 }
 
-func validateNetworks(nets []string, mapIdx int, summary *model.RoutemapSummary) error {
+func ValidateNetworks(nets []string, mapIdx int, summary *model.RoutemapSummary) error {
 	var (
 		allErrs error
 		errs    []error
@@ -171,7 +171,7 @@ func ValidateLabels(labels []string, mapIdx int, summary *model.RoutemapSummary)
 	return allErrs
 }
 
-func validateVersion(version int) error {
+func ValidateVersion(version int) error {
 	if version < 1 {
 		return fmt.Errorf("invalid or missing meta/version")
 	} else if version != 1 {
@@ -182,7 +182,7 @@ func validateVersion(version int) error {
 }
 
 func startValidate(root *model.RoutemapRoot, summary *model.RoutemapSummary) error {
-	if err := validateVersion(root.MetaVersion()); err != nil {
+	if err := ValidateVersion(root.MetaVersion()); err != nil {
 		return err
 	}
 
@@ -205,7 +205,7 @@ func startValidate(root *model.RoutemapRoot, summary *model.RoutemapSummary) err
 			continue
 		}
 
-		multierr.AppendInto(&allErrs, validateNetworks(m.Networks, idx, summary))
+		multierr.AppendInto(&allErrs, ValidateNetworks(m.Networks, idx, summary))
 		multierr.AppendInto(&allErrs, ValidateLabels(m.Labels, idx, summary))
 
 		if lg.EnabledFor(lg.LevelDebug) && (summary.NumNetworks-lastProgressReport) > 500000 {
