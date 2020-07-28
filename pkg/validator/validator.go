@@ -92,8 +92,12 @@ func ValidateNetwork(network string) (net.IP, *net.IPNet, []error) {
 		return nil, nil, []error{errUnparsableNetworkAddr}
 	}
 
-	errs = append(errs, ValidateProperCIDR(ip, ipnet))
-	errs = append(errs, ValidateNetmaskLen(ipnet))
+	if err = ValidateProperCIDR(ip, ipnet); err != nil {
+		errs = append(errs, err)
+	}
+	if err = ValidateNetmaskLen(ipnet); err != nil {
+		errs = append(errs, err)
+	}
 
 	return ip, ipnet, errs
 }
