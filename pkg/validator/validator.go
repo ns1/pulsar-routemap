@@ -80,16 +80,17 @@ func ValidateNetmaskLen(ipnet *net.IPNet) error {
 
 // ValidateNetwork takes an string representing a network from the JSON source
 // file and validates it.
-// Returns the parsed IP and IPNet along with a slice of possible errors. If the
-// network can not be parsed, only the error slice will contain values. The
-// correctness of the network depends on the returned error slice having zero
-// elements.
-func ValidateNetwork(network string) (net.IP, *net.IPNet, []error) {
+// Returns the parsed IP and IPNet along with an error instance that can possibly
+// be a multierr instance.
+//
+// If the network can not be parsed, only the error instance will contain values.
+// The correctness of the network depends on the returned error having a nil value.
+func ValidateNetwork(network string) (net.IP, *net.IPNet, error) {
 	var errs []error
 
 	ip, ipnet, err := net.ParseCIDR(network)
 	if err != nil {
-		return nil, nil, []error{errUnparsableNetworkAddr}
+		return nil, nil, fmt.Errorf("%w: ", errUnparsableNetworkAddr)
 	}
 
 	if err = ValidateProperCIDR(ip, ipnet); err != nil {
@@ -99,13 +100,13 @@ func ValidateNetwork(network string) (net.IP, *net.IPNet, []error) {
 		errs = append(errs, err)
 	}
 
-	return ip, ipnet, errs
+	return ip, ipnet, multierr.Combine(errs...)
 }
 
 func ValidateNetworks(nets []string, mapIdx int, summary *model.RoutemapSummary) error {
 	var (
 		allErrs error
-		errs    []error
+		err     error
 		ipnet   *net.IPNet
 	)
 
@@ -114,7 +115,17 @@ func ValidateNetworks(nets []string, mapIdx int, summary *model.RoutemapSummary)
 	for idx, n := range nets {
 		lg.Tracef("visiting networks at index=%d, map segment index=%d...", idx, mapIdx)
 
-		_, ipnet, errs = ValidateNetwork(n)
+		_, ipnet, err = ValidateNetwork(n)
+		if err != nil {
+			errs := multierr.Errors(err)
+			for _, e := range errs {
+				// Rehydrate the packed errors so we can set the proper individual
+				// error messages.
+				multierr.AppendInto(&allErrs,
+					fmt.Errorf("%v (for CIDR \"%s\" at index=%d, map segment index=%d)",
+						e, n, idx, mapIdx))
+			}
+		}
 
 		// ValidateNetwork will return a nil ipnet if the string was unparsable.
 		if ipnet != nil {
@@ -122,13 +133,6 @@ func ValidateNetworks(nets []string, mapIdx int, summary *model.RoutemapSummary)
 				summary.NumIPv4 += 1
 			} else {
 				summary.NumIPv6 += 1
-			}
-		}
-
-		for _, e := range errs {
-			if e != nil {
-				multierr.AppendInto(&allErrs,
-					fmt.Errorf("%v (for CIDR \"%s\" at index=%d, map segment index=%d)", e, n, idx, mapIdx))
 			}
 		}
 	}
