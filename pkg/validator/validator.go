@@ -124,6 +124,7 @@ func ValidateNetworks(nets []string, mapIdx int, summary *model.RoutemapSummary)
 					fmt.Errorf("%v (for CIDR \"%s\" at index=%d, map segment index=%d)",
 						e, n, idx, mapIdx))
 			}
+			continue
 		}
 
 		// ValidateNetwork will return a nil ipnet if the string was unparsable.
