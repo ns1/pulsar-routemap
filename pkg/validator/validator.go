@@ -117,8 +117,7 @@ func ValidateNetworks(nets []string, mapIdx int, summary *model.RoutemapSummary)
 
 		_, ipnet, err = ValidateNetwork(n)
 		if err != nil {
-			errs := multierr.Errors(err)
-			for _, e := range errs {
+			for _, e := range multierr.Errors(err) {
 				// Rehydrate the packed errors so we can set the proper individual
 				// error messages.
 				multierr.AppendInto(&allErrs,
