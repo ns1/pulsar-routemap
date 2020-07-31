@@ -90,7 +90,7 @@ func ValidateNetwork(network string) (net.IP, *net.IPNet, error) {
 
 	ip, ipnet, err := net.ParseCIDR(network)
 	if err != nil {
-		return nil, nil, fmt.Errorf("%w: ", errUnparsableNetworkAddr)
+		return nil, nil, errUnparsableNetworkAddr
 	}
 
 	if err = ValidateProperCIDR(ip, ipnet); err != nil {
