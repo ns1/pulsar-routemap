@@ -42,8 +42,13 @@ are not supported.
 
 ### Limits
 
+Global limits that apply to all customers:
 * IPv4 prefix length up to /26
 * IPv6 prefix length up to /64
+
+Customer-specific limits. These are defaults per-customer but may be increased. Contact your customer support representative for assistance if you encounter one of these.
+* Total number of map segments is limited to 100,000
+* Total map size is limited to 450MB 
 
 
 ### Simple example
